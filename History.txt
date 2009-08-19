@@ -1,3 +1,7 @@
+== 6.6.0 2009-08-18
+
+* Rely on latest DNSSD (1.3)
+
 == 6.5.0 2009-03-17
 
 * Added web command to launch and announce instaweb

@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'dnssd'
 require 'set'
+require 'timeout'
 
 Thread.abort_on_exception = true
 
@@ -225,7 +226,7 @@ module Gitjour
         tr['description'] = File.read("#{path}/.git/description") rescue "a git project"
         tr['gitjour'] = 'true' # distinguish instaweb from other HTTP servers
 
-        DNSSD.register(name, type, 'local', port, tr.encode) do |rr|
+        DNSSD.register(name, type, 'local', port, tr) do |rr|
           puts "Registered #{name} on port #{port}. Starting service."
         end
       end
