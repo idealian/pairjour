@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{gitjour}
-  s.version = "6.5.0"
+  s.version = "6.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Fowler", "Evan Phoenix", "Rich Kilmer", "Phil Hagelberg"]
-  s.date = %q{2009-08-18}
+  s.date = %q{2009-09-07}
   s.default_executable = %q{gitjour}
   s.description = %q{Automates ZeroConf-powered serving and cloning of git repositories.}
   s.email = ["chad@chadfowler.com", "evan@fallingsnow.net", "rich@example.com", "technomancy@gmail.com"]

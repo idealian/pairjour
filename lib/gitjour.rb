@@ -6,7 +6,7 @@ require 'timeout'
 Thread.abort_on_exception = true
 
 module Gitjour
-  VERSION = "6.5.0"
+  VERSION = "6.6.0"
   GitService = Struct.new(:name, :host, :port, :description)
 
   class Application
