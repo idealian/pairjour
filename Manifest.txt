@@ -2,8 +2,8 @@ History.txt
 Manifest.txt
 README.rdoc
 Rakefile
-bin/gitjour
-lib/gitjour.rb
-lib/gitjour/browser.rb
-test/test_gitjour.rb
+bin/pairjour
+lib/pairjour.rb
+lib/pairjour/browser.rb
+test/test_pairjour.rb
 test/test_helper.rb

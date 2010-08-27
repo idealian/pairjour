@@ -1,8 +1,11 @@
 # -*- ruby -*-
 
+require File.dirname(__FILE__) + '/lib/pairjour'
+
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
+    s.version = Pairjour::VERSION
     s.name = "pairjour"
     s.summary = "pair programming using bonjour and git"
     s.description = "pair programming using bonjour and git, originalted as a fork of gitjour"

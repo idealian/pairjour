@@ -2,10 +2,11 @@ require 'rubygems'
 require 'dnssd'
 require 'set'
 require 'timeout'
+require 'fileutils'
 
 Thread.abort_on_exception = true
 
-module Gitjour
+module Pairjour
   VERSION = "6.6.0"
   GitService = Struct.new(:name, :host, :port, :description)
 
@@ -28,6 +29,12 @@ module Gitjour
           web(*args)
         when "browse"
           browse(*args)
+        when "start"
+          start(*args)
+        when "finish"
+          finish(*args)
+        when "switch"
+          switch(*args)
         else
           help
         end
@@ -35,12 +42,60 @@ module Gitjour
 
       private
 
+      # 
+      def start(name)
+        set 'project-name', name
+        
+        `git config --unset pairjour.service-name`
+
+        system "bin/pairjour serve . #{name} &"
+      
+        `git checkout -b pairing`
+      end
+      
+      
+      def switch
+        project = get('project-name')
+        
+        unless service_name = get('service-name') 
+          service_name = service_list.find do |s|
+            s.name.include?(project)
+          end
+          
+          set 'service-name', service_name
+        end
+
+        
+        `git commit -am "pair session switch #{Time.now.to_s}"`
+        `pairjour pull #{service_name}`
+      end
+      
+      def pid_file_path
+        path = ENV['HOME'] + '/.pairjour/'
+        
+        FileUtils.mkdir_p path
+        
+        path + '.pid'
+      end
+      
+      def finish
+        `kill #{open(pid_file_path).read}`
+      end
+
+      def get(name)
+        `git config pairjour.#{name}`.chomp
+      end
+      
+      def set(name, value)
+        `git config pairjour.#{name} #{value}`
+      end
+
       def service_name(name)
         # If the name starts with ^, then don't apply the prefix
         if name[0] == ?^
           name = name[1..-1]
         else
-          prefix = `git config --get gitjour.prefix`.chomp
+          prefix = `git config --get pairjour.prefix`.chomp
           prefix = ENV["USER"] if prefix.empty?
           name   = [prefix, name].compact.join("-")
         end
@@ -50,7 +105,7 @@ module Gitjour
       def list
         service_list.each do |service|
           puts "=== #{service.name} on #{service.host}:#{service.port} ==="
-          puts "  gitjour (clone|pull) #{service.name}"
+          puts "  pairjour (clone|pull) #{service.name}"
           if service.description != '' && service.description !~ /^Unnamed repository/
             puts "  #{service.description}"
           end
@@ -104,8 +159,8 @@ module Gitjour
             end
           end
         end
-
-        `git daemon --verbose --export-all --port=#{port} --base-path=#{path} --base-path-relaxed`
+        
+        system "git daemon --verbose --export-all --port=#{port} --base-path=#{path} --base-path-relaxed --pid-file=#{pid_file_path}"
       end
 
       def web(path=Dir.pwd, *rest)
@@ -129,27 +184,27 @@ module Gitjour
       end
 
       def help
-        puts "Gitjour #{Gitjour::VERSION}"
+        puts "Pairjour #{Pairjour::VERSION}"
         puts "Serve up and use git repositories via ZeroConf."
-        puts "\nUsage: gitjour <command> [args]"
+        puts "\nUsage: pairjour <command> [args]"
         puts
         puts "  list"
         puts "      Lists available repositories."
         puts
         puts "  clone <project> [<directory>]"
-        puts "      Clone a gitjour-served repository."
+        puts "      Clone a pairjour-served repository."
         puts
         puts "  serve <path_to_project> [<name_of_project>] [<port>] or"
         puts "        <path_to_projects>"
-        puts "      Serve up the current directory or projects via gitjour."
+        puts "      Serve up the current directory or projects via pairjour."
         puts
         puts "      The name of your project is automatically prefixed with"
-        puts "      `git config --get gitjour.prefix` or your username (preference"
+        puts "      `git config --get pairjour.prefix` or your username (preference"
         puts "      in that order). If you don't want a prefix, put a ^ on the front"
         puts "      of the name_of_project (the ^ is removed before announcing)."
         puts
         puts "  pull <project> [<branch>]"
-        puts "      Pull from a gitjour-served repository."
+        puts "      Pull from a pairjour-served repository."
         puts
         puts "  remote <project> [<name>]"
         puts "      Add a ZeroConf remote into your current repository."
@@ -215,7 +270,7 @@ module Gitjour
       end
 
       def browse(*args)
-        require "gitjour/browser"
+        require "pairjour/browser"
         Browser.new(*args).start
       end
 
@@ -224,7 +279,7 @@ module Gitjour
 
         tr = DNSSD::TextRecord.new
         tr['description'] = File.read("#{path}/.git/description") rescue "a git project"
-        tr['gitjour'] = 'true' # distinguish instaweb from other HTTP servers
+        tr['pairjour'] = 'true' # distinguish instaweb from other HTTP servers
 
         DNSSD.register(name, type, 'local', port, tr) do |rr|
           puts "Registered #{name} on port #{port}. Starting service."

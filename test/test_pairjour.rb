@@ -1,7 +1,7 @@
 require 'net/telnet'
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class TestGitjour < Test::Unit::TestCase
+class TestPairjour < Test::Unit::TestCase
   def test_thread_friendly
     repo = File.dirname(__FILE__) + '/repo'
     port = 3289
@@ -9,7 +9,7 @@ class TestGitjour < Test::Unit::TestCase
     `mkdir -p #{repo}; cd #{repo}; git init`
     
     thread = Thread.new do
-      Gitjour::Application.send(:serve, repo, 'test', port)
+      Pairjour::Application.send(:serve, repo, 'test', port)
     end
 
     sleep 1

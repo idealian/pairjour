@@ -3,7 +3,7 @@ require "erb"
 require "set"
 require "thread"
 
-module Gitjour
+module Pairjour
   class Browser
 
     def initialize(*args)
@@ -17,7 +17,7 @@ module Gitjour
       DNSSD.browse("_http._tcp") do |reply|
         begin
           DNSSD.resolve reply.name, reply.type, reply.domain do |resolve_reply|
-            next unless resolve_reply.text_record['gitjour']
+            next unless resolve_reply.text_record['pairjour']
             service = GitService.new(reply.name,
                                      resolve_reply.target,
                                      resolve_reply.port,
