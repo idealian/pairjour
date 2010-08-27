@@ -1,17 +1,17 @@
 # -*- ruby -*-
 
-require 'rubygems'
-require 'hoe'
-require './lib/gitjour.rb'
-
-Hoe.new('gitjour', Gitjour::VERSION) do |p|
-  p.extra_deps << ['dnssd', "~> 1.3"]
-  p.developer('Chad Fowler', 'chad@chadfowler.com')
-  p.developer('Evan Phoenix', 'evan@fallingsnow.net')
-  p.developer('Rich Kilmer', 'rich@example.com')
-  p.developer('Phil Hagelberg', 'technomancy@gmail.com')
-
-  p.readme_file = 'README.rdoc'
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |s|
+    s.name = "pairjour"
+    s.summary = "pair programming using bonjour and git"
+    s.description = "pair programming using bonjour and git, originalted as a fork of gitjour"
+    s.email = "taylor.luk@idealian.net"
+    s.homepage = "http://github.com/idealian/pairjour"
+    s.authors = ["Taylor luk", "Khoa Nguyne", 'Chad Fowler', 'Evan Phoenix', 'Rich Kilmer', 'Phil Hagelberg']
+    s.add_dependency 'dnssd', "~> 1.3"
+    
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
 end
-
-# vim: syntax=Ruby
