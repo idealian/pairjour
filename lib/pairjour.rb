@@ -67,7 +67,7 @@ module Pairjour
         end
 
         `git commit -am "pair session switch #{Time.now.to_s}"`
-        `pairjour pull #{service_name}`
+        `pairjour pull #{service_name} pairing`
       end
       
       def pid_file_path
