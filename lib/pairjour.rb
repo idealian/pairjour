@@ -58,15 +58,14 @@ module Pairjour
         project = get('project-name')
         service_name = get('service-name')
         
-        unless service_name == ''
-          service_name = service_list.find do |s|
-            s.name.include?(project)
+        if service_name == ''
+          service = service_list.find do |s|
+            s.name.include?(project) && !s.name.include?(prefix)
           end
           
-          set 'service-name', service_name
+          set 'service-name', service_name = service.name
         end
 
-        
         `git commit -am "pair session switch #{Time.now.to_s}"`
         `pairjour pull #{service_name}`
       end
@@ -91,14 +90,19 @@ module Pairjour
         `git config pairjour.#{name} #{value}`
       end
 
+      def prefix
+        prefix = get('prefix')
+        prefix = ENV["USER"] if prefix.empty?
+        
+        prefix
+      end
+      
       def service_name(name)
         # If the name starts with ^, then don't apply the prefix
         if name[0] == ?^
           name = name[1..-1]
         else
-          prefix = `git config --get pairjour.prefix`.chomp
-          prefix = ENV["USER"] if prefix.empty?
-          name   = [prefix, name].compact.join("-")
+          name = [prefix, name].compact.join("-")
         end
         name
       end
