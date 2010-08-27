@@ -23,8 +23,12 @@ Gem::Specification.new do |s|
      "Manifest.txt",
      "README.md",
      "Rakefile",
-     "test/test_pairjour.rb",
-     "test/test_helper.rb"
+     "bin/pairjour",
+     "lib/pairjour.rb",
+     "lib/pairjour/browser.rb",
+     "pairjour.gemspec",
+     "test/test_helper.rb",
+     "test/test_pairjour.rb"
   ]
   s.homepage = %q{http://github.com/idealian/pairjour}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -32,8 +36,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{pair programming using bonjour and git}
   s.test_files = [
-    "test/test_pairjour.rb",
-     "test/test_helper.rb"
+    "test/test_helper.rb",
+     "test/test_pairjour.rb"
   ]
 
   if s.respond_to? :specification_version then

@@ -48,7 +48,7 @@ module Pairjour
         
         `git config --unset pairjour.service-name`
 
-        system "bin/pairjour serve . #{name} &"
+        system "pairjour serve . #{name} &"
       
         `git checkout -b pairing`
       end
