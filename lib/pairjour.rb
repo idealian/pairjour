@@ -56,8 +56,9 @@ module Pairjour
       
       def switch
         project = get('project-name')
+        service_name = get('service-name')
         
-        unless service_name = get('service-name') 
+        unless service_name == ''
           service_name = service_list.find do |s|
             s.name.include?(project)
           end
